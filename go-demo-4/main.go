@@ -5,12 +5,19 @@ import (
 	"fmt"
 	"math/rand"
 	"net/url"
+	"time"
 )
 
 type account struct {
 	login    string
 	password string
 	url      string
+}
+
+type accountWithTimestamp struct {
+	account
+	createdAt time.Time
+	updatedAt time.Time
 }
 
 func (a account) outputAccount() {
@@ -66,6 +73,19 @@ func main() {
 	}
 
 	myAccount.outputAccount()
+
+	// AccountWithTimestamp
+	myAccountWithTimestamp := accountWithTimestamp{
+		account: account{
+			login:    login,
+			password: password,
+			url:      url,
+		},
+		createdAt: time.Now(),
+		updatedAt: time.Now(),
+	}
+
+	fmt.Println("WithTimestamp", myAccountWithTimestamp, myAccountWithTimestamp.createdAt.Format(time.DateOnly))
 }
 
 func promptData(prompt string) string {
