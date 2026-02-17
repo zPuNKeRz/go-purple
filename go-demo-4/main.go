@@ -26,17 +26,30 @@ func (a *account) generatePassword(n int) {
 }
 
 func newAccount(login, password, urlString string) (*account, error) {
-	// Validate
+
+	// Проверка логин
+	if login == "" {
+		return nil, errors.New("INVALID_LOGIN")
+	}
+
+	// Проверка URL
 	_, err := url.ParseRequestURI(urlString)
 	if err != nil {
 		return nil, errors.New("INVALID_URL")
 	}
 
-	return &account{
+	newAccount := &account{
 		login:    login,
 		password: password,
 		url:      urlString,
-	}, nil
+	}
+
+	// Проверка пароля
+	if password == "" {
+		newAccount.generatePassword(12)
+	}
+
+	return newAccount, nil
 }
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*!")
@@ -48,7 +61,7 @@ func main() {
 
 	myAccount, error := newAccount(login, password, url)
 	if error != nil {
-		fmt.Println("Неверный формат URL")
+		fmt.Println("Неверный формат URL или логин")
 		return
 	}
 
@@ -58,7 +71,7 @@ func main() {
 func promptData(prompt string) string {
 	fmt.Print(prompt + " ")
 	var result string
-	fmt.Scan(&result)
+	fmt.Scanln(&result)
 
 	return result
 }
