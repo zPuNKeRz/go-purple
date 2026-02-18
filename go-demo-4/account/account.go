@@ -2,10 +2,11 @@ package account
 
 import (
 	"errors"
-	"fmt"
 	"math/rand"
 	"net/url"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*!")
@@ -23,7 +24,9 @@ type accountWithTimestamp struct {
 }
 
 func (a account) OutputAccount() {
-	fmt.Println(a.login, a.password, a.url)
+	color.Cyan(a.login)
+	color.Red(a.password)
+	color.Green(a.url)
 }
 
 func (a *account) generatePassword(n int) {
