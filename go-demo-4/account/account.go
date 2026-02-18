@@ -1,4 +1,4 @@
-package main
+package account
 
 import (
 	"errors"
@@ -22,7 +22,7 @@ type accountWithTimestamp struct {
 	updatedAt time.Time
 }
 
-func (a account) outputAccount() {
+func (a account) OutputAccount() {
 	fmt.Println(a.login, a.password, a.url)
 }
 
@@ -34,7 +34,7 @@ func (a *account) generatePassword(n int) {
 	a.password = string(result)
 }
 
-func newAccount(login, password, urlString string) (*account, error) {
+func NewAccount(login, password, urlString string) (*account, error) {
 
 	// Проверка логин
 	if login == "" {

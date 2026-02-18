@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"go-demo-4/account"
 )
 
 func main() {
@@ -9,13 +10,13 @@ func main() {
 	password := promptData("Введите пароль:")
 	url := promptData("Введите URL:")
 
-	myAccount, error := newAccount(login, password, url)
+	myAccount, error := account.NewAccount(login, password, url)
 	if error != nil {
 		fmt.Println("Неверный формат URL или логин")
 		return
 	}
 
-	myAccount.outputAccount()
+	myAccount.OutputAccount()
 }
 
 func promptData(prompt string) string {
