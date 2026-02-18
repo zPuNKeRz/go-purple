@@ -3,9 +3,12 @@ package main
 import (
 	"fmt"
 	"go-demo-4/account"
+	"go-demo-4/file"
 )
 
 func main() {
+	file.WriteFile("Привет!!! Я файл", "file.txt")
+
 	login := promptData("Введите логин:")
 	password := promptData("Введите пароль:")
 	url := promptData("Введите URL:")
@@ -17,6 +20,7 @@ func main() {
 	}
 
 	myAccount.OutputAccount()
+
 }
 
 func promptData(prompt string) string {
