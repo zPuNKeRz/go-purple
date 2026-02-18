@@ -2,8 +2,10 @@ package account
 
 import (
 	"errors"
+	"fmt"
 	"math/rand"
 	"net/url"
+	"reflect"
 	"time"
 
 	"github.com/fatih/color"
@@ -11,25 +13,25 @@ import (
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*!")
 
-type account struct {
-	login    string
-	password string
-	url      string
+type Account struct {
+	login    string `json:"login"`
+	password string `json:"password"`
+	url      string `json:"url"`
 }
 
-type accountWithTimestamp struct {
-	account
+type AccountWithTimestamp struct {
+	Account
 	createdAt time.Time
 	updatedAt time.Time
 }
 
-func (a account) OutputAccount() {
+func (a Account) OutputAccount() {
 	color.Cyan(a.login)
 	color.Red(a.password)
 	color.Green(a.url)
 }
 
-func (a *account) generatePassword(n int) {
+func (a *Account) generatePassword(n int) {
 	result := make([]rune, n)
 	for i := range result {
 		result[i] = letterRunes[rand.Intn(len(letterRunes))]
@@ -37,7 +39,7 @@ func (a *account) generatePassword(n int) {
 	a.password = string(result)
 }
 
-func NewAccount(login, password, urlString string) (*account, error) {
+func NewAccount(login, password, urlString string) (*Account, error) {
 
 	// Проверка логин
 	if login == "" {
@@ -50,11 +52,14 @@ func NewAccount(login, password, urlString string) (*account, error) {
 		return nil, errors.New("INVALID_URL")
 	}
 
-	newAccount := &account{
+	newAccount := &Account{
 		login:    login,
 		password: password,
 		url:      urlString,
 	}
+
+	field, _ := reflect.TypeOf(newAccount).Elem().FieldByName("login")
+	fmt.Println(string(field.Tag))
 
 	// Проверка пароля
 	if password == "" {
