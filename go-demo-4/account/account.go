@@ -1,11 +1,11 @@
 package account
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
 	"net/url"
-	"reflect"
 	"time"
 
 	"github.com/fatih/color"
@@ -14,21 +14,27 @@ import (
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*!")
 
 type Account struct {
-	login    string `json:"login"`
-	password string `json:"password"`
-	url      string `json:"url"`
+	Login     string    `json:"login"`
+	Password  string    `json:"password"`
+	Url       string    `json:"url"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-type AccountWithTimestamp struct {
-	Account
-	createdAt time.Time
-	updatedAt time.Time
+func (a *Account) OutputAccount() {
+	color.Cyan(a.Login)
+	color.Red(a.Password)
+	color.Green(a.Url)
+	fmt.Println(a)
 }
 
-func (a Account) OutputAccount() {
-	color.Cyan(a.login)
-	color.Red(a.password)
-	color.Green(a.url)
+func (a *Account) ToBytes() ([]byte, error) {
+	file, err := json.Marshal(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return file, nil
 }
 
 func (a *Account) generatePassword(n int) {
@@ -36,7 +42,7 @@ func (a *Account) generatePassword(n int) {
 	for i := range result {
 		result[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
-	a.password = string(result)
+	a.Password = string(result)
 }
 
 func NewAccount(login, password, urlString string) (*Account, error) {
@@ -53,13 +59,12 @@ func NewAccount(login, password, urlString string) (*Account, error) {
 	}
 
 	newAccount := &Account{
-		login:    login,
-		password: password,
-		url:      urlString,
+		Login:     login,
+		Password:  password,
+		Url:       urlString,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
-
-	field, _ := reflect.TypeOf(newAccount).Elem().FieldByName("login")
-	fmt.Println(string(field.Tag))
 
 	// Проверка пароля
 	if password == "" {
