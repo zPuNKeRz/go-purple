@@ -52,7 +52,10 @@ func createAccount() {
 		return
 	}
 
-	data, err := myAccount.ToBytes()
+	vault := account.NewVault()
+	vault.AddAccount(*myAccount)
+
+	data, err := vault.ToBytes()
 	if err != nil {
 		fmt.Println("Не удалось преобразовать в JSON")
 
